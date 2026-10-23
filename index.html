@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AETHER — Your Hands. Your Magic.</title>
+<meta name="theme-color" content="#080713">
+<meta name="description" content="Real-time webcam hand-tracking magic studio. Make hearts, stars, fire and more with your index finger.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext y='50' font-size='48' fill='%23C084FC'%3E✦%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="nav">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">✦</span>
+      <div><b>AETHER</b><small>YOUR HANDS. YOUR MAGIC.</small></div>
+    </div>
+    <div class="nav-right">
+      <div class="pill" id="navStatus" data-state="off" role="status"><i></i><span>CAMERA OFF</span></div>
+      <button class="btn ghost js-fs" type="button"><span aria-hidden="true">⛶</span> <span class="fs-label">Fullscreen</span></button>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">INTERACTIVE HAND-TRACKING STUDIO</p>
+    <h1>Make the air come alive.</h1>
+    <p class="lead">Turn on your webcam and move your index finger. AETHER follows your fingertip in real time and turns every movement into glowing hearts, blooming flowers, galaxies, lightning, or lines that stay in the air until you clear them.</p>
+    <ul class="chips">
+      <li><i class="dot"></i>Live hand tracking</li>
+      <li>12 magic effects</li>
+      <li>Processed in your browser</li>
+    </ul>
+  </section>
+
+  <main class="studio">
+    <section class="stage" id="stage" aria-label="Camera stage">
+      <video id="video" playsinline muted autoplay></video>
+      <canvas id="drawCanvas"></canvas>
+      <canvas id="fxCanvas"></canvas>
+
+      <div class="hud">
+        <div class="hud-row">
+          <span class="chip status" id="stageStatus" data-state="off" role="status"><i></i><span>CAMERA OFF</span></span>
+          <span class="chip">FPS <b id="fpsVal">--</b></span>
+        </div>
+        <div class="hud-row">
+          <span class="chip">Effect: <b id="fxName">Hearts 💗</b></span>
+          <span class="chip priv" id="privChip" data-state="off" title="Video is processed in your browser. Nothing is recorded or uploaded."><i></i><span>Camera off</span></span>
+        </div>
+      </div>
+
+      <div class="overlay" id="overlay" data-mode="idle">
+        <div class="ov-card">
+          <span class="ov-mark" aria-hidden="true">✦</span>
+          <div class="spin" aria-hidden="true"></div>
+          <h2 id="ovTitle">Enable your camera</h2>
+          <p id="ovText">AETHER asks for camera access only after you click. Video stays in your browser. Nothing is recorded or uploaded.</p>
+          <button class="btn primary" id="enableBtn" type="button">Enable camera</button>
+        </div>
+      </div>
+
+      <div class="bar">
+        <button class="btn" id="camBtn" type="button">Enable camera</button>
+        <button class="btn" id="flipBtn" type="button" disabled>Flip camera</button>
+        <button class="btn" id="pauseBtn" type="button" aria-pressed="false">Pause effects</button>
+        <button class="btn" id="clearBtn" type="button">Clear canvas</button>
+        <button class="btn ghost js-fs" type="button"><span aria-hidden="true">⛶</span> <span class="fs-label">Fullscreen</span></button>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <section class="card">
+        <h2>Effect library</h2>
+        <div class="fx-grid" id="effectGrid" role="group" aria-label="Magic effects"></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head"><h2>Settings</h2><button class="btn small" id="resetBtn" type="button">Reset</button></div>
+        <label class="ctl"><span>Effect size</span><output id="sizeOut">100%</output>
+          <input type="range" id="sizeRange" min="50" max="170" step="5" value="100"></label>
+        <label class="ctl"><span>Trail length</span><output id="trailOut">60%</output>
+          <input type="range" id="trailRange" min="20" max="100" step="5" value="60"></label>
+        <label class="ctl"><span>Magic intensity</span><output id="intensityOut">60%</output>
+          <input type="range" id="intensityRange" min="20" max="100" step="5" value="60"></label>
+        <div class="ctl"><span>Glow color</span><div class="swatches" id="swatches" role="group" aria-label="Glow color"></div></div>
+      </section>
+
+      <section class="card how">
+        <h2>How to use</h2>
+        <ol>
+          <li>Click <b>Enable camera</b> and allow access.</li>
+          <li>Raise one hand with your index finger pointing up.</li>
+          <li>Move your fingertip. Effects follow it.</li>
+          <li>Pick <b>Air Drawing</b> to write; lines stay until you press <b>Clear canvas</b>.</li>
+        </ol>
+        <p class="note">Only your index fingertip is tracked. Letter recognition and extra gestures are not part of this version.</p>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="foot">
+    <p><b>Privacy:</b> the camera starts only after you click. Frames are analysed in your browser and are never recorded, saved or uploaded. No microphone is used.</p>
+    <p><b>Downloaded from public CDNs:</b> Google Fonts, the MediaPipe Tasks Vision script and WASM files (jsDelivr), and the hand-landmark model (Google storage). An internet connection is needed on first load.</p>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="fail" id="fail" role="alert" hidden></div>
+<script>
+(function(){
+  function show(m){var b=document.getElementById('fail');if(b){b.hidden=false;b.textContent=m;}}
+  window.addEventListener('error',function(e){
+    show('AETHER could not start: '+(e.message||('could not load '+(e.target&&(e.target.src||e.target.href))))+'. Open the page with VS Code Live Server, then press F12 and check the Console.');
+  },true);
+  if(location.protocol==='file:'){document.addEventListener('DOMContentLoaded',function(){
+    show('You opened this file directly (file://). Browsers restrict cameras and scripts here. Use VS Code Live Server (http://127.0.0.1:5500) instead.');});}
+})();
+</script>
+<script src="js/app.js" defer></script>
+</body>
+</html>
